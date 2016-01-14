@@ -4,11 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace RoundNumber
+namespace QuantileFunction
 {
     class Program
     {
+        static BigNumber Mean(BigNumber[] NumberSeries)
+        {
+            BigNumber sum = new BigNumber("0");
+            foreach (BigNumber SingleNumber in NumberSeries)
+            {
+                sum += SingleNumber;
+            }
+            int len = NumberSeries.Length;
+            BigNumber len_bignumber = new BigNumber(len.ToString());
+            return sum / len_bignumber;
+        }
         static string round(string number, int digits, int type)
         {
             //type为0时四舍五入，1为ground，2为ceiling
@@ -28,7 +38,7 @@ namespace RoundNumber
                 }
                 else
                 {
-                    return NumberBroken[0] + ".".PadRight(digits + 1, '0');
+                return NumberBroken[0] + ".".PadRight(digits + 1, '0');
                 }
             }
             else
@@ -81,16 +91,62 @@ namespace RoundNumber
                 return NumberBroken[0] + '.' + decimal_part;
             }
         }
+        static void Sort(int n, BigNumber[] NumberSeries)
+        {
+            BigNumber temp = new BigNumber("0");
+            if (n <= 1){
+                return;
+            }
+            for (int i = 0;i < n - 1;i++){
+                if (CompareNumber.Compare(NumberSeries[i] , NumberSeries[i+1]) == 1){
+                    temp = NumberSeries[i +1];
+                    NumberSeries[i + 1]= NumberSeries[i];
+                    NumberSeries[i]=temp;
+                }
+                	Sort(n - 1, NumberSeries);
+            }
+        }
+        static BigNumber Quantile(BigNumber[] NumberSeries, double quan)
+        {
+            int len = NumberSeries.Length;
+            double position = quan * (double)(len + 1);
+            if ((position - Convert.ToDouble((int)position)) != 0)
+            {
+                int position_low = Convert.ToInt32(round(position.ToString(), 0, 1));
+                BigNumber multi_1 = new BigNumber((position - Convert.ToDouble(position_low)).ToString());
+                BigNumber multi_2 = new BigNumber((1 - (position - Convert.ToDouble(position_low))).ToString());
+                BigNumber quan_num = new BigNumber("0");
+                quan_num = multi_1 * NumberSeries[position_low - 1] + multi_2 * NumberSeries[position_low];
+                return quan_num;
+            }
+            else
+            {
+                BigNumber quan_num = NumberSeries[(int)position - 1];
+                return quan_num;
+            }
+        }
         static void Main(string[] args)
         {
-            for (; ; )
+            
+            Console.WriteLine("请输入你要输入数字个数：");
+            int n = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("请输入一列数，用逗号分隔：");
+            string number_series = Console.ReadLine();
+            char[] separator = {','};
+            string[] numbers = number_series.Split(separator);
+            BigNumber[] x = new BigNumber[n];
+            for (int i = 0; i < n; i++)
             {
-                Console.WriteLine("输入一个数字：");
-                string number = Console.ReadLine();
-                Console.WriteLine("要保留的位数：");
-                int digits = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("{0}的前{1}位小数是{2}", number, digits, round(number, digits,2));
+                x[i] = new BigNumber(numbers[i]);
             }
+            Console.WriteLine(Mean(x).ToString());
+            Sort(x.Length, x);
+            for (int i = 0; i < n; i++)
+            {
+                Console.WriteLine("{0}",x[i]);
+            }
+            Console.WriteLine("数列的中位数是：{0}", Quantile(x, 0.5).ToString());
+            Console.ReadKey();
         }
     }
 }
