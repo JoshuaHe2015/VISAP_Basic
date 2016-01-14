@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace RoundForDecimal
+namespace 计算器测试1
 {
     class Program
     {
-        static string round(string number, int digits)
+        static string round(string number, int digits,int type)
         {
+            //type为0时四舍五入，1为ground，2为ceiling
                 int NumOriginLen = number.Length;
                 char[] digit_dot = { '.' };
                 string[] NumberBroken;
@@ -30,6 +31,22 @@ namespace RoundForDecimal
                     BigNumber one = new BigNumber("1");
                     if (NumberBroken[1].Length > digits)
                     {
+                        if (type == 1){
+                            decimal_part = NumberBroken[1].Substring(0, digits);
+                        }
+                        else if (type == 2){
+                            BigNumber carry = new BigNumber(digits.ToString());
+                            carry = zero_point_one.Power(carry, 200);
+                            BigNumber number_changed = new BigNumber(number);
+                            number_changed = number_changed + carry;
+                            if (digits <= 0)
+                            {
+                                return number_changed.ToString().Substring(0,NumberBroken[0].Length);
+                            }
+                            return number_changed.ToString().Substring(0, NumOriginLen - (NumberBroken[1].Length - digits));
+                        }
+                        else 
+                        {
                         if (Convert.ToInt32(NumberBroken[1].Substring(digits, 1)) > 4)
                         {
                             BigNumber carry = new BigNumber(digits.ToString());
@@ -42,11 +59,15 @@ namespace RoundForDecimal
                         {
                             decimal_part = NumberBroken[1].Substring(0, digits);
                         }
-
+                        }
                     }
                     else
                     {
                         decimal_part = NumberBroken[1].PadRight(digits, '0');
+                    }
+                    if (decimal_part == "")
+                    {
+                        return NumberBroken[0];
                     }
                     return NumberBroken[0] + '.' + decimal_part;
                 }
@@ -59,7 +80,7 @@ namespace RoundForDecimal
                 string number = Console.ReadLine();
                 Console.WriteLine("要保留的位数：");
                 int digits = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("{0}保留前{1}位小数的结果是{2}", number, digits, round(number, digits));
+                Console.WriteLine("{0}的前{1}位小数是{2}", number, digits, round(number, digits,2));
             }
         }
     }
