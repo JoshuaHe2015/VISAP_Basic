@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace 统计工具测试1
+namespace MeanAndSort
 {
     class Program
     {
