@@ -30,6 +30,7 @@ namespace NormalCDF
             double Result = 0.5 + 0.5 * erf;
             Console.WriteLine("Result = {0}",Result);
             //Result的值为该点处正态分布的累积密度值。
+            //(maximum error: 3×10−7)
             Console.ReadKey();
         }
     }
