@@ -8,30 +8,28 @@ namespace NormalCDF
 {
     class Program
     {
-        public static double NORMSDIST(double a)
-        {
-            //近似计算正态分布
-            double p = 0.2316419;
-            double b1 = 0.31938153;
-            double b2 = -0.356563782;
-            double b3 = 1.781477937;
-            double b4 = -1.821255978;
-            double b5 = 1.330274429;
-            double x = Math.Abs(a);
-            double t = 1 / (1+p*x);
-            double val =1- (1/(Math.Sqrt(2*Math.PI))  * Math.Exp(-1*Math.Pow(a,2)/2)) * (b1*t + b2 * Math.Pow(t,2) + b3*Math.Pow(t,3) + b4 * Math.Pow(t,4) + b5 * Math.Pow(t,5) );
-            if( a < 0)
-            {
-                val =1 - val;
-            }
-            return val;
-        }
         static void Main(string[] args)
         {
-            double i = 2.9;
-            Console.WriteLine("F({0}) = {1}",i,NORMSDIST(i));
-            
-            
+            double[] a = new double [7];
+            a[0] = 1;
+            a[1] = 0.0705230784;
+            a[2] = 0.0422820123;
+            a[3] = 0.0092705272;
+            a[4] = 0.0001520143;
+            a[5] = 0.0002765672;
+            a[6] = 0.0000430638;
+            double erf_x = 1.645;
+            //erf_x为x的值
+            erf_x = erf_x / Math.Sqrt(2);
+            double multi = 0;
+            for (int i = 0; i < 7; i++)
+            {
+                multi += a[i] * Math.Pow(erf_x, i);
+            }
+            double erf = 1 - 1 / (Math.Pow(multi, 16));
+            double Result = 0.5 + 0.5 * erf;
+            Console.WriteLine("Result = {0}",Result);
+            //Result的值为该点处正态分布的累积密度值。
             Console.ReadKey();
         }
     }
