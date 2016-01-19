@@ -28,8 +28,9 @@ namespace AdjustDigits
             //用来判定数字是否为负
             int zero_count = 0;
             //用于计算小数点后有多少个零
-            
-            if (Number.Length > 10)
+            NumberParts = Number.Split(separator);
+            if (NumberParts[0].Length + 5 > 10)
+                //四位小数加上1个小数点
             {
                 if (Number[0] == '-'){
                     IsNegative = 1;
@@ -177,9 +178,10 @@ namespace AdjustDigits
                 //如果本身长度就在十个单位以内，则不作处理
                 //保留四位小数
             }
-            if (ProcessedNumber.Length < 10)
+            if (ProcessedNumber.Length < 11)
             {
-                ProcessedNumber = ProcessedNumber.PadLeft(10, ' ');
+                ProcessedNumber = ProcessedNumber.PadLeft(11, ' ');
+                //11个单位的长度是为了预留量
             }
             Console.WriteLine("ProcessedNumber={0}", ProcessedNumber);
             Console.ReadKey();
